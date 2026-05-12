@@ -48,29 +48,24 @@ def generate_palette(base: Color, scheme: str, count: int) -> list[Color]:
     h, l, s = rgb_to_hls(base)
 
     if scheme == "Monocromática":
-        lights = [0.14, 0.28, 0.42, 0.56, 0.70, 0.84]
-        chosen = lights[:count]
-        return [hls_to_rgb(h, light, s) for light in chosen]
+        lights = [0.10, 0.20, 0.32, 0.44, 0.56, 0.66, 0.74, 0.80, 0.87, 0.93]
+        return [hls_to_rgb(h, light, s) for light in lights[:count]]
 
     if scheme == "Análoga":
-        offsets = [-36, -20, -8, 8, 20, 36]
-        chosen = offsets[:count]
-        return [hls_to_rgb(shift_hue(h, off), l, s) for off in chosen]
+        offsets = [-40, -28, -16, -6, 6, 16, 28, 40, 52, -52]
+        return [hls_to_rgb(shift_hue(h, off), l, s) for off in offsets[:count]]
 
     if scheme == "Complementaria":
-        points = [0, 180, -18, 18, 162, 198]
-        chosen = points[:count]
-        return [hls_to_rgb(shift_hue(h, off), l, s) for off in chosen]
+        points = [0, 180, -18, 18, 162, 198, -30, 30, 150, 210]
+        return [hls_to_rgb(shift_hue(h, off), l, s) for off in points[:count]]
 
     if scheme == "Triádica":
-        points = [0, 120, 240, 16, 136, 256]
-        chosen = points[:count]
-        return [hls_to_rgb(shift_hue(h, off), l, s) for off in chosen]
+        points = [0, 120, 240, 16, 136, 256, -16, 104, 224, 60]
+        return [hls_to_rgb(shift_hue(h, off), l, s) for off in points[:count]]
 
     if scheme == "Complementaria dividida":
-        points = [0, 150, 210, -12, 138, 222]
-        chosen = points[:count]
-        return [hls_to_rgb(shift_hue(h, off), l, s) for off in chosen]
+        points = [0, 150, 210, -12, 138, 222, 12, 162, 198, -24]
+        return [hls_to_rgb(shift_hue(h, off), l, s) for off in points[:count]]
 
     return [base]
 
@@ -123,8 +118,9 @@ def main() -> None:
 
     with st.sidebar:
         st.header("Configuración")
-        random_base = "#{:06X}".format(random.randint(0, 0xFFFFFF))
-        base_hex = st.color_picker("Color base", value=random_base)
+        if "base_hex" not in st.session_state:
+            st.session_state.base_hex = "#{:06X}".format(random.randint(0, 0xFFFFFF))
+        base_hex = st.color_picker("Color base", value=st.session_state.base_hex, key="base_hex")
         scheme = st.selectbox(
             "Esquema",
             [
@@ -136,7 +132,7 @@ def main() -> None:
             ],
             index=0,
         )
-        count = st.slider("Cantidad de colores", min_value=3, max_value=6, value=5)
+        count = st.slider("Cantidad de colores", min_value=3, max_value=10, value=5)
 
     base_color = hex_to_rgb(base_hex)
     palette = generate_palette(base_color, scheme, count)
