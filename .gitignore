@@ -1,0 +1,10 @@
+# Entrega LaTeX
+entrega_texforge/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Streamlit
+.streamlit/secrets.toml
